@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>HTML5 Video</title>
+</head>
+<body onload="setVolume();">
+
+<video width="320" height="240">
+	<source src="nikefootball.mp4" type="video/mp4" />
+	<source src="nikefootball.ogv" type="video/ogg" />
+	<source src="nikefootball.webm" type="video/webm" />
+	<p>Sorry. Unfortunately your browser does not support the video tag. Please use either FireFox or Chrome.</p>
+</video>
+
+<nav>	
+	<input type="button" style="width:80px;" value="Play" id="playpause" onclick="playOrPause()">
+	<input type="button" style="width:50px;" value="<<" onclick="stepBackward()">
+	<input type="button" style="width:50px;" value=">>" onclick="stepForward()">
+	Volume:
+	<input type="button" style="width:80px;" value="Mute" id="mutebutton" onclick="muteOrUnmute()">
+	<input type="button" style="width:30px;" id="volDown" value="-" onclick="volDown()">
+	<input type="button" style="width:30px;" id="volUp" value="+" onclick="volUp()">
+	<span id="volume">3</span>
+	<!--<input type="range" max="1" step="any" id="volumecontrol" onchange="updateVolume()">-->
+</nav>
+
+<a onclick="goTo15()"><img src="screenShot-15.jpg" /></a>
+<a onclick="goTo30()"><img src="screenShot-30.jpg" /></a>
+<a onclick="goTo45()"><img src="screenShot-45.jpg" /></a>
+
+<script type="text/javascript">
+	var video = document.getElementsByTagName('video')[0];
+	
+	// Toggle play and pause
+	var playpause = document.getElementById('playpause');	
+	function playOrPause() {
+		if (video.ended || video.paused) {
+			video.play();
+			playpause.value = 'Pause';
+		} else {
+			video.pause();
+			playpause.value = 'Play';
+		}
+	}
+	
+	video.onended = function(e) { //Seems to only work on Firefox, not Chrome
+		playpause.value = 'Replay';
+	}
+
+	// Seek back
+	function stepBackward() {
+		var now = video.currentTime;
+		video.currentTime = now - 2;
+	}
+	
+	// Seek forward
+	function stepForward() {
+		var now = video.currentTime;
+		video.currentTime = now + 2;
+	}
+
+	// Mute the volume
+	var mutebutton = document.getElementById('mutebutton');
+	function muteOrUnmute() {
+		video.muted = !video.muted;
+		if(video.muted){
+			mutebutton.value = 'Unmute';
+		} else {
+			mutebutton.value = 'Mute';
+		}
+	}
+	
+	// Set volume to default when on page load
+	function setVolume(){
+		video.volume = 0.3;
+	}
+	
+	var volume = document.getElementById('volume');
+	// Increase the volume
+	function volUp() {
+		if (video.volume < 1) {
+			video.volume = Math.round((video.volume + 0.1)*10)/10;
+			volume.firstChild.nodeValue = Math.round(video.volume*10);
+		}
+	}
+	
+	// Decrease the volume
+	function volDown() {
+		if (video.volume > 0) {
+			video.volume = Math.round((video.volume - 0.1)*10)/10;
+			volume.firstChild.nodeValue = Math.round(video.volume*10);
+		}
+	}
+	
+	// Cue points
+	function goTo15(){
+		var time = 15
+		video.currentTime = time;
+		changePageUrlOffset(time);
+	}
+	
+	function goTo30(){
+		var time = 30
+		video.currentTime = time;
+		changePageUrlOffset(time);
+	}
+	
+	function goTo45(){
+		var time = 45
+		video.currentTime = time;
+		changePageUrlOffset(time);
+	}
+	
+	// change urls
+	function changePageUrlOffset(time) {
+		// update page url
+		location.hash = "#t=" + time;
+		video.pause();
+		playpause.value = 'Play';
+	}
+	
+//	***** Volume control using input type 'range' - Only works on Chrome ****
+//	var volumecontrol = document.getElementById('volumecontrol');
+	
+//	function updateVolume() {
+//		video.volume = volumecontrol.value;
+//	}
+</script>
+
+</body>
+</head>
+</html>
